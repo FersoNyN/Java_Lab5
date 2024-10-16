@@ -1,23 +1,18 @@
 public class Application {
     public static void main(String[] args) {
-        // Create a shared Fifo object for the producers
+        // Create a shared FIFO object for the producer and consumer
         Fifo fifo = new Fifo();
 
-        // Create two Producer threads with the shared Fifo
+        // Create two Producer threads that will produce messages into the FIFO
         Producer producer1 = new Producer("first", fifo);
         Producer producer2 = new Producer("second", fifo);
 
-        // Start the first Producer thread
+        // Create a Consumer thread that will consume messages from the FIFO
+        Consumer consumer = new Consumer(fifo, "consumer1", 500); // Consumer waits 500 milliseconds between reads
+
+        // Start the producer and consumer threads
         producer1.start();
-
-        try {
-            // Sleep for 0.5 seconds before starting the second thread
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Start the second Producer thread
         producer2.start();
+        consumer.start();
     }
 }
