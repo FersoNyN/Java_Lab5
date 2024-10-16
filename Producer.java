@@ -1,45 +1,37 @@
-import java.util.concurrent.TimeUnit;
-
 public class Producer extends Thread {
-    private String text;       // The text part of the message
-    private int messageCount;  // Tracks the number of messages
-    private Fifo fifo;         // Shared FIFO queue
+    private Fifo fifo;   // Shared FIFO queue
+    private String text; // Text to produce
+    private int waitTime; // Wait time in milliseconds
 
-    // Constructor to initialize the text and the shared Fifo object
-    public Producer(String text, Fifo fifo) {
-        this.text = text;
-        this.messageCount = 0;
+    public Producer(Fifo fifo, String text, int waitTime) {
         this.fifo = fifo;
+        this.text = text;
+        this.waitTime = waitTime;
     }
 
-    // Override the run() method to define the thread's behavior
     @Override
     public void run() {
+        int messageCount = 0;
         try {
-            while (true) {
+            while (messageCount < 3) { // Limiting the number of messages for testing
                 // Get the current time in milliseconds
                 long currentTimeMillis = System.currentTimeMillis();
-
-                // Extract the last 5 digits of the system time
-                String time = String.format("%05d", currentTimeMillis % 100000);
-
-                // Create the message to insert into the Fifo
                 String message = text + " " + messageCount;
 
-                // Insert the message into the Fifo
+                // Put the message in the FIFO
                 fifo.put(message);
 
-                // Print the "produced" message with the required format
-                System.out.println("produced " + message + " " + time);
+                // Print the produced message
+                System.out.println("produced " + message + " " + (currentTimeMillis % 100000));
 
-                // Increment the message count for the next message
+                // Increment the message count
                 messageCount++;
 
-                // Sleep for 1 second before producing the next message
-                TimeUnit.SECONDS.sleep(1);
+                // Wait for the specified time before producing the next message
+                Thread.sleep(waitTime);
             }
         } catch (InterruptedException e) {
-            System.out.println(text + " thread was interrupted.");
+            System.out.println("Producer was interrupted.");
         }
     }
 }

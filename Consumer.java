@@ -18,14 +18,12 @@ public class Consumer extends Thread {
                 // Read a string from the FIFO
                 String message = fifo.get();
 
-                // Get the current time in milliseconds
+                // Get the current time in milliseconds at the moment of consumption
                 long currentTimeMillis = System.currentTimeMillis();
-
-                // Extract the last 5 digits of the system time
-                String time = String.format("%05d", currentTimeMillis % 100000);
+                String consumedTime = String.format("%05d", currentTimeMillis % 100000);
 
                 // Print the "consumed" message with the required format
-                System.out.println("consumed " + id + " " + message + " " + time);
+                System.out.println("consumed " + id + " " + message + " " + consumedTime);
 
                 // Sleep for the specified delay (N milliseconds)
                 Thread.sleep(delay);
