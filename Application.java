@@ -1,0 +1,23 @@
+public class Application {
+    public static void main(String[] args) {
+        // Create a shared Fifo object for the producers
+        Fifo fifo = new Fifo();
+
+        // Create two Producer threads with the shared Fifo
+        Producer producer1 = new Producer("first", fifo);
+        Producer producer2 = new Producer("second", fifo);
+
+        // Start the first Producer thread
+        producer1.start();
+
+        try {
+            // Sleep for 0.5 seconds before starting the second thread
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Start the second Producer thread
+        producer2.start();
+    }
+}
